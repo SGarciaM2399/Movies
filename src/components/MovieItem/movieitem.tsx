@@ -1,30 +1,81 @@
-import React  from "react";
+import axios from "axios";
+import React, { Fragment, useEffect, useState } from "react";
 import styled from "styled-components";
-import { movie } from "../../interfaces/movie";
 
-const fixedOverview: (overview: string) => string = (overview: string) => {
-  if (overview.split(" ").length >= 40) {
-    console.log("xD");
 
-    return overview.split(" ").splice(0, 40).join(" ").concat("...");
-  } else return overview;
-};
+export const SSmovieitem: React.FC<{
+  className?: string;
+  movie_id: number;
+  onClick?: (e: any) => void;
+}> = ({ className, movie_id, onClick }) => {
+  const [title, changeTitle] = useState("Cargando..");
+  const [overview, changeOverview] = useState("Cargando..");
+  const [poster, changePoster] = useState("");
 
-export const SSmovieitem: React.FC<movie> = ({
-  className,
-  title,
-  overview,
-  img,
-}) => {
-  overview = fixedOverview(overview);
+  useEffect(() => {
+    if (movie_id !== -1) {
+      axios
+        .get(
+          `https://api.themoviedb.org/3/movie/${movie_id}?api_key=d9d559e0133b604a0108b3c1a3792593&language=es`
+        )
+        .then((res) => {
+          const { data } = res;
+
+          window.addEventListener("resize", () => {
+          });
+          changeOverview(data.overview);
+          changeTitle(data.title);
+          changePoster(`https://image.tmdb.org/t/p/w500${data.poster_path}`);
+        });
+    }
+  }, [movie_id]);
 
   return (
     <div className={className}>
-      <img className="image" src={img} alt="" />
-      <h1 className="title">{title}</h1>
-      <div className="movie-body">
-        <p>{overview}</p>
-      </div>
+      {movie_id !== -1 ? (
+        <>
+          {poster !== "" ? (
+            <img className="image" src={poster} alt="" />
+          ) : (
+            <img
+              className="image"
+              alt=""
+              src="https://media1.tenor.com/images/556e9ff845b7dd0c62dcdbbb00babb4b/tenor.gif"
+            />
+          )}
+          <h1 className="title">{title}</h1>
+          <div className="movie-body">
+            <p>{overview}</p>
+          </div>
+        </>
+      ) : (
+        <Fragment>
+          <img
+            className="image"
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Plus_symbol.svg/1200px-Plus_symbol.svg.png"
+            alt=""
+            onClick={(e) => {
+              if (onClick) {
+                onClick("uwu");
+              } else {
+                console.log("error");
+              }
+            }}
+          />
+          <h1
+            onClick={(e) => {
+              if (onClick) {
+                onClick("uwu");
+              } else {
+                console.log("error");
+              }
+            }}
+            className="title"
+          >
+            Mostrar mas..
+          </h1>
+        </Fragment>
+      )}
     </div>
   );
 };
@@ -34,7 +85,7 @@ export const MovieItem = styled(SSmovieitem)`
     grid-template-rows: 500px 60px;
 
     overflow: hidden;
-    margin-bottom: 100px;
+    margin-bottom: 20px;
     background: #fff;
     cursor: pointer;
   }
@@ -52,7 +103,8 @@ export const MovieItem = styled(SSmovieitem)`
     align-items: center;
     padding: 2rem;
     font-size: 18px;
-    background: #fff;
+    color: white;
+    background: #1b1b1b;
     z-index: 10;
   }
   &:hover .movie-body {
@@ -62,14 +114,13 @@ export const MovieItem = styled(SSmovieitem)`
     transform: scale(1, 1);
   }
   &:hover .image {
-
     transform: scale(1.2, 1.2);
   }
   .movie-body {
     border-radius: var(--border) var(--border) 0 0;
     background: rgba(0, 0, 0, 0.8);
     height: 500px;
-    width: 300px;
+    width: var(--movie-width);
     color: white;
     position: absolute;
     display: flex;
@@ -77,10 +128,48 @@ export const MovieItem = styled(SSmovieitem)`
     align-items: center;
     padding: 2rem;
     transition: all 1s ease;
-    opacity: 0;
+    opacity: 0; 
   }
   .movie-body p {
     transform: scale(0.5, 0.5);
     transition: all 1s ease;
+    height:45%;
+    padding:1rem;
+    overflow:hidden;
+    text-overflow: ellipsis;
+  }
+  @media screen and (min-width: 800px) and (max-width: 1300px) {
+    & {
+      grid-template-rows: 300px 60px;
+    }
+    .image {
+      height: 300px;
+    }
+    .title {
+      font-size: 1rem;
+      padding: 0.5rem;
+    }
+    .movie-body {
+      height: 300px;
+      font-size: 12px;
+      padding: 0.5rem;
+    }
+  }
+  @media screen and (max-width: 800px) {
+    & {
+      grid-template-rows: 250px 60px;
+    }
+    .movie-body {
+      height: 250px;
+      font-size: 0.6rem;
+      padding: 0.5rem;
+    }
+    .image {
+      height: 250px;
+    }
+    .title {
+      padding: 0.5rem;
+      font-size: 0.7rem;
+    }
   }
 `;
