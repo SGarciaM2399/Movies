@@ -21,11 +21,10 @@ export const SSmovieitem: React.FC<{
         .then((res) => {
           const { data } = res;
 
-          window.addEventListener("resize", () => {
-          });
+         
           changeOverview(data.overview);
           changeTitle(data.title);
-          changePoster(`https://image.tmdb.org/t/p/w500${data.poster_path}`);
+          data.poster_path?changePoster(data.poster_path):changePoster('');
         });
     }
   }, [movie_id]);
@@ -35,7 +34,7 @@ export const SSmovieitem: React.FC<{
       {movie_id !== -1 ? (
         <>
           {poster !== "" ? (
-            <img className="image" src={poster} alt="" />
+            <img className="image" src={`https://image.tmdb.org/t/p/w500${poster}`} alt="" />
           ) : (
             <img
               className="image"
@@ -88,13 +87,14 @@ export const MovieItem = styled(SSmovieitem)`
     margin-bottom: 20px;
     background: #fff;
     cursor: pointer;
+    position: relative;
   }
   .image {
     height: 500px;
     width: 100%;
     overflow: hidden;
     object-fit: cover;
-    transition: all 1s ease;
+    transition: transform 1s ease;
   }
   .title {
     text-align: center;
@@ -127,12 +127,12 @@ export const MovieItem = styled(SSmovieitem)`
     justify-content: center;
     align-items: center;
     padding: 2rem;
-    transition: all 1s ease;
+    transition: opacity 1s ease;
     opacity: 0; 
   }
   .movie-body p {
     transform: scale(0.5, 0.5);
-    transition: all 1s ease;
+    transition: transform 1s ease;
     height:45%;
     padding:1rem;
     overflow:hidden;

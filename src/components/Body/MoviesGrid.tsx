@@ -1,9 +1,7 @@
-import axios from "axios";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 import styled from "styled-components";
-import { propTypes } from "../../interfaces/proptypes";
 import { MovieItem } from "../MovieItem/movieitem";
-const moviesMap :(arr:[],show_all:boolean,show_switch:()=>void)=>any = (arr, show_all ,show_switch ) => {
+const moviesMap :(arr:[number],show_all:boolean,show_switch:()=>void)=>any = (arr, show_all ,show_switch ) => {
   const _arr = [...arr];
   if (!show_all) {
      return (<>{_arr.map((e: any, index: number) => {
@@ -35,41 +33,22 @@ const moviesMap :(arr:[],show_all:boolean,show_switch:()=>void)=>any = (arr, sho
  
 };
 
-const getLastMovies = async () => {
-  const { data } = await axios.get(
-    "https://api.themoviedb.org/3/movie/now_playing?language=es&api_key=d9d559e0133b604a0108b3c1a3792593"
-  );
-  if (data) {
-    return data.results.map((e: any) => {
-      return e.id;
-    });
-  } else return null;
-};
 
-export const SSbody: React.FC<propTypes> = ({ className }) => {
-  const [movies, setMovies]: [[], any] = useState([]);
+export const SSMoviesGrid: React.FC<{movies:any, className?:string}> = ({ className ,movies}) => {
   const [show_all,change_show_all] = useState(false);
   
-  useEffect(() => {
-    getLastMovies()
-      .then((e) => {
-        setMovies(e);
-      })
-      .catch((err) => setMovies([])); 
-  }, []);
-
   return (
     <main className={className}>
-      <h2>Ultimos Lanzamientos</h2>
       <section className="movies">
-        {movies.length !== 0 ? moviesMap(movies,show_all,()=>{change_show_all(!show_all)}) : "Cargando.."}
+        { moviesMap(movies,show_all,()=>{change_show_all(!show_all)}) }
       </section>
     </main>
   );
 };
-export const Body = styled(SSbody)`
+export const MoviesGrid = styled(SSMoviesGrid)`
   & {
     background: #444449;
+    min-height:89.95%;
     height: auto;
     padding: 2rem;
   }

@@ -4,3 +4,17 @@
   box-sizing: border-box;
   font-family: 'Roboto Mono', monospace;
 }
+html{
+  overflow: hidden;
+}
+.page {
+  height: 90vh;
+  overflow-y: scroll;
+  
+}
+.page > .title{
+  background: #444449;
+  padding: 1.5rem;
+  text-align: center;
+  color:whitesmoke;
+}
