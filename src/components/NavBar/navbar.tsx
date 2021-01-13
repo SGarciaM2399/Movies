@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import "font-awesome/css/font-awesome.css";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 interface propTypes {
   className?: string | any;
 }
 
 export const SSnavbar: React.FC<propTypes> = ({ className }) => {
   const [query, changeQuery] = useState("");
-
+  const history = useHistory();
   return (
     <nav className={className}>
       <Link to="/">
@@ -26,7 +26,7 @@ export const SSnavbar: React.FC<propTypes> = ({ className }) => {
         onSubmit={(e) => {
           e.preventDefault();
           if (query !== "") {
-            window.location.href = `/search/${query}`;
+            history.push(`/search/${query}`);
           }
         }}
         className="form"
